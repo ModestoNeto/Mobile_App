@@ -2,10 +2,10 @@ import 'react-native-gesture-handler';
 import React from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
-import StartGame from 'Mobile_Game\Infinit_Runner\src\components\StartGame.tsx';
-import SelectCharacter from 'Mobile_Game\Infinit_Runner\src\components\SelectCharacter.tsx';
-import SelectScenario from 'Mobile_Game\Infinit_Runner\src\components\SelectScenario.tsx';
-import Game from 'Mobile_Game\Infinit_Runner\src\components\Game.tsx';
+import StartGame from './src/components/StartGame';
+import SelectCharacter from './src/components/SelectCharacter';
+import SelectScenario from './src/components/SelectScenario';
+import Game from './src/components/Game';
 
 const Stack = createStackNavigator();
 
