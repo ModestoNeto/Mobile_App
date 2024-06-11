@@ -1,30 +1,44 @@
-import React, { useEffect } from 'react';
-import { View, Button, Text, StyleSheet } from 'react-native';
+import React, { useState } from 'react';
+import { View, Image, TouchableOpacity, Button, Text, StyleSheet } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
-import SoundManager from 'Mobile_Game\Infinit_Runner\src\utils\SoundManager.ts';
+import AssetManager from '../utils/AssetManager';
 
-const StartGame: React.FC = () => {
+const SelectCharacter: React.FC = () => {
+  const [selectedCharacter, setSelectedCharacter] = useState<string | null>(null);
   const navigation = useNavigation();
 
-  useEffect(() => {
-    const soundManager = SoundManager.getInstance();
-    soundManager.loadSounds([
-      { name: 'background', uri: require('../../assets/sounds/background.mp3') },
-      { name: 'start', uri: require('../../assets/sounds/start.mp3') },
-      { name: 'gameOver', uri: require('../../assets/sounds/gameOver.mp3') }
-    ]);
-  }, []);
+  const characters = [
+    { name: 'player1', uri: require('../../assets/images/player1.png') },
+    { name: 'player2', uri: require('../../assets/images/player2.png') },
+  ];
 
-  const handleStart = async () => {
-    const soundManager = SoundManager.getInstance();
-    await soundManager.playSound('start');
-    navigation.navigate('SelectCharacter');
+  const handleCharacterSelect = (character: string) => {
+    setSelectedCharacter(character);
+  };
+
+  const handleNext = async () => {
+    const assetManager = AssetManager.getInstance();
+    await assetManager.loadSprites([{ name: 'player', uri: selectedCharacter }]);
+    navigation.navigate('SelectScenario');
   };
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Welcome to Infinite Runner</Text>
-      <Button title="Start Game" onPress={handleStart} />
+      <Text style={styles.title}>Select Your Character</Text>
+      <View style={styles.charactersContainer}>
+        {characters.map((char) => (
+          <TouchableOpacity key={char.name} onPress={() => handleCharacterSelect(char.uri)}>
+            <Image
+              source={char.uri}
+              style={[
+                styles.character,
+                { borderWidth: selectedCharacter === char.uri ? 2 : 0 },
+              ]}
+            />
+          </TouchableOpacity>
+        ))}
+      </View>
+      <Button title="Next" onPress={handleNext} disabled={!selectedCharacter} />
     </View>
   );
 };
@@ -41,6 +55,16 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     marginBottom: 20,
   },
+  charactersContainer: {
+    flexDirection: 'row',
+    marginBottom: 20,
+  },
+  character: {
+    width: 100,
+    height: 100,
+    margin: 10,
+    borderColor: 'blue',
+  },
 });
 
-export default StartGame;
+export default SelectCharacter;

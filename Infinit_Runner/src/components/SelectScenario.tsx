@@ -1,24 +1,36 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { View, Image, TouchableOpacity, Button, Text, StyleSheet } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
-import AssetManager from 'Mobile_Game\Infinit_Runner\src\utils\AssetManager.ts';
+import AssetManager from '../utils/AssetManager';
 
 const SelectScenario: React.FC = () => {
   const [selectedScenario, setSelectedScenario] = useState<any>(null);
   const navigation = useNavigation();
 
   const scenarios = [
-    { name: 'scenario1', uri: require('../../assets/images/scenario1.png') },
-    { name: 'scenario2', uri: require('../../assets/images/scenario2.png') },
+    { name: 'rainyBackground', uri: require('../../assets/images/scenario1.png') },
+    { name: 'sunnyBackground', uri: require('../../assets/images/scenario2.png') },
   ];
+
+  const obstacles = [
+    { name: 'obstacle1', uri: require('../../assets/images/obstacle1.png') },
+    { name: 'obstacle2', uri: require('../../assets/images/obstacle2.png') },
+  ];
+
+  useEffect(() => {
+    const loadAssets = async () => {
+      const assetManager = AssetManager.getInstance();
+      await assetManager.loadBackgrounds(scenarios);
+      await assetManager.loadObstacles(obstacles);
+    };
+    loadAssets();
+  }, []);
 
   const handleScenarioSelect = (scenario: any) => {
     setSelectedScenario(scenario);
   };
 
   const handleStartGame = async () => {
-    const assetManager = AssetManager.getInstance();
-    await assetManager.loadBackgrounds([{ name: 'gameBackground', uri: selectedScenario }]);
     navigation.navigate('Game');
   };
 

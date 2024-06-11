@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { View, Image, TouchableOpacity, Button, Text, StyleSheet } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
-import AssetManager from 'Mobile_Game\Infinit_Runner\src\utils\AssetManager.ts';
+import AssetManager from '../utils/AssetManager';
 
 const SelectCharacter: React.FC = () => {
   const [selectedCharacter, setSelectedCharacter] = useState<any>(null);

@@ -2,10 +2,10 @@ import 'react-native-gesture-handler';
 import React from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
-import StartGame from './src/components/StartGame';
-import SelectCharacter from './src/components/SelectCharacter';
-import SelectScenario from './src/components/SelectScenario';
-import Game from './src/components/Game';
+import StartGame from '../components/StartGame';
+import SelectCharacter from './components/SelectCharacter';
+import SelectScenario from './components/SelectScenario';
+import Game from './components/Game';
 
 const Stack = createStackNavigator();
 
