@@ -1,5 +1,10 @@
 import { Audio } from 'expo-av';
 
+interface SoundItem {
+  name: string;
+  uri: any;
+}
+
 class SoundManager {
   private static instance: SoundManager;
   private sounds: Map<string, Audio.Sound>;
@@ -15,7 +20,7 @@ class SoundManager {
     return SoundManager.instance;
   }
 
-  public async loadSounds(sounds: { name: string, uri: any }[]): Promise<void> {
+  public async loadSounds(sounds: SoundItem[]): Promise<void> {
     for (const sound of sounds) {
       const { sound: audioSound } = await Audio.Sound.createAsync(sound.uri);
       this.sounds.set(sound.name, audioSound);

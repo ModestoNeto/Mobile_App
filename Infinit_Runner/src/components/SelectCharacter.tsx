@@ -4,7 +4,7 @@ import { useNavigation } from '@react-navigation/native';
 import AssetManager from '../utils/AssetManager';
 
 const SelectCharacter: React.FC = () => {
-  const [selectedCharacter, setSelectedCharacter] = useState<any>(null);
+  const [selectedCharacter, setSelectedCharacter] = useState<string | null>(null);
   const navigation = useNavigation();
 
   const characters = [
@@ -12,7 +12,7 @@ const SelectCharacter: React.FC = () => {
     { name: 'player2', uri: require('../../assets/images/player2.png') },
   ];
 
-  const handleCharacterSelect = (character: any) => {
+  const handleCharacterSelect = (character: string) => {
     setSelectedCharacter(character);
   };
 
