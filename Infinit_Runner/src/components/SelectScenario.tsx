@@ -4,7 +4,7 @@ import { useNavigation } from '@react-navigation/native';
 import AssetManager from '../utils/AssetManager';
 
 const SelectScenario: React.FC = () => {
-  const [selectedScenario, setSelectedScenario] = useState<any>(null);
+  const [selectedScenario, setSelectedScenario] = useState<string | null>(null);
   const navigation = useNavigation();
 
   const scenarios = [
@@ -26,11 +26,11 @@ const SelectScenario: React.FC = () => {
     loadAssets();
   }, []);
 
-  const handleScenarioSelect = (scenario: any) => {
+  const handleScenarioSelect = (scenario: string) => {
     setSelectedScenario(scenario);
   };
 
-  const handleStartGame = async () => {
+  const handleStartGame = () => {
     navigation.navigate('Game');
   };
 

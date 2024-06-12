@@ -1,15 +1,20 @@
 import { Asset } from 'expo-asset';
 
+interface AssetItem {
+  name: string;
+  uri: any;
+}
+
 class AssetManager {
   private static instance: AssetManager;
-  private sprites: Map<string, any>;
-  private backgrounds: Map<string, any>;
-  private obstacles: Map<string, any>;
+  private sprites: Map<string, Asset>;
+  private backgrounds: Map<string, Asset>;
+  private obstacles: Map<string, Asset>;
 
   private constructor() {
-    this.sprites = new Map<string, any>();
-    this.backgrounds = new Map<string, any>();
-    this.obstacles = new Map<string, any>();
+    this.sprites = new Map<string, Asset>();
+    this.backgrounds = new Map<string, Asset>();
+    this.obstacles = new Map<string, Asset>();
   }
 
   public static getInstance(): AssetManager {
@@ -19,7 +24,7 @@ class AssetManager {
     return AssetManager.instance;
   }
 
-  public async loadSprites(sprites: { name: string, uri: any }[]): Promise<void> {
+  public async loadSprites(sprites: AssetItem[]): Promise<void> {
     for (const sprite of sprites) {
       const asset = Asset.fromModule(sprite.uri);
       await asset.downloadAsync();
@@ -27,7 +32,7 @@ class AssetManager {
     }
   }
 
-  public async loadBackgrounds(backgrounds: { name: string, uri: any }[]): Promise<void> {
+  public async loadBackgrounds(backgrounds: AssetItem[]): Promise<void> {
     for (const background of backgrounds) {
       const asset = Asset.fromModule(background.uri);
       await asset.downloadAsync();
@@ -35,7 +40,7 @@ class AssetManager {
     }
   }
 
-  public async loadObstacles(obstacles: { name: string, uri: any }[]): Promise<void> {
+  public async loadObstacles(obstacles: AssetItem[]): Promise<void> {
     for (const obstacle of obstacles) {
       const asset = Asset.fromModule(obstacle.uri);
       await asset.downloadAsync();
@@ -43,15 +48,15 @@ class AssetManager {
     }
   }
 
-  public getSprite(name: string): any {
+  public getSprite(name: string): Asset | undefined {
     return this.sprites.get(name);
   }
 
-  public getBackground(name: string): any {
+  public getBackground(name: string): Asset | undefined {
     return this.backgrounds.get(name);
   }
 
-  public getObstacle(name: string): any {
+  public getObstacle(name: string): Asset | undefined {
     return this.obstacles.get(name);
   }
 }
