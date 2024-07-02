@@ -20,6 +20,7 @@
       "googleServicesFile": "./GoogleService-Info.plist"
     },
     "android": {
+      "enableHermes": true,
       "package": "com.yourcompany.yourapp",
       "googleServicesFile": "./app/google-services.json",
       "adaptiveIcon": {
@@ -31,4 +32,5 @@
       "favicon": "./assets/images/favicon.png"
     }
   }
+  
 }
