@@ -1,10 +1,23 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   StyleSheet, View, TextInput, Pressable, Text, ScrollView, ActivityIndicator, Alert, Keyboard, Platform, StatusBar
 } from 'react-native';
 import { MaterialIcons } from '@expo/vector-icons';
 import { Picker } from '@react-native-picker/picker';
 import Slider from '@react-native-community/slider';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { StackNavigationProp } from '@react-navigation/stack';
+import { useNavigation } from '@react-navigation/native';
+
+type RootStackParamList = {
+  Home: undefined;
+  SavedResponses: undefined;
+};
+
+type HomeScreenNavigationProp = StackNavigationProp<
+  RootStackParamList,
+  'Home'
+>;
 
 const KEY_GPT = ''; // Defina a chave da API diretamente aqui
 
@@ -14,6 +27,21 @@ export default function HomeScreen() {
   const [frequency, setFrequency] = useState("ocasionalmente");
   const [loading, setLoading] = useState(false);
   const [solution, setSolution] = useState("");
+  const navigation = useNavigation<HomeScreenNavigationProp>();
+
+  useEffect(() => {
+    const loadSolution = async () => {
+      try {
+        const storedSolution = await AsyncStorage.getItem('@solution');
+        if (storedSolution) {
+          setSolution(storedSolution);
+        }
+      } catch (error) {
+        console.error('Error loading solution:', error);
+      }
+    };
+    loadSolution();
+  }, []);
 
   async function handleGenerate() {
     if (situation === "") {
@@ -34,7 +62,7 @@ export default function HomeScreen() {
         Authorization: `Bearer ${KEY_GPT}`
       },
       body: JSON.stringify({
-        model: "gpt-3.5-turbo", // Use gpt-3.5-turbo em vez de gpt-4
+        model: "gpt-3.5-turbo", // Use gpt-3.5-turbo
         messages: [
           {
             role: 'user',
@@ -47,11 +75,13 @@ export default function HomeScreen() {
       })
     })
       .then(response => response.json())
-      .then((data) => {
+      .then(async (data) => {
         console.log('Response data:', data);
 
         if (data && data.choices && data.choices.length > 0 && data.choices[0].message && data.choices[0].message.content) {
-          setSolution(data.choices[0].message.content);
+          const newSolution = data.choices[0].message.content;
+          setSolution(newSolution);
+          await AsyncStorage.setItem('@solution', newSolution);
         } else {
           throw new Error('Resposta inesperada da API');
         }
