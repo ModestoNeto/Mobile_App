@@ -12868,6 +12868,10 @@
     "@react-native-community/slider": "^4.5.2",
     "@react-native-picker/picker": "^2.7.7",
     "expo": "^51.0.17",
+    "expo-application": "~5.9.1",
+    "expo-constants": "~16.0.2",
+    "expo-device": "~6.0.2",
+    "firebase": "^10.12.2",
     "react-native": "^0.74.2",
     "typescript": "~5.3.3"
   },

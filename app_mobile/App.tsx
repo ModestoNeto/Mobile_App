@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import {
   StyleSheet, Text, View, StatusBar, TextInput, Platform, Pressable, ScrollView,
   ActivityIndicator, Alert, Keyboard
@@ -6,17 +6,45 @@ import {
 import { MaterialIcons } from '@expo/vector-icons';
 import { Picker } from '@react-native-picker/picker';
 import Slider from '@react-native-community/slider';
+import { firebase } from './firebase'; // Certifique-se de que o caminho está correto
 
 const statusBarHeight = StatusBar.currentHeight;
-const KEY_GPT = ;// Defina a chave da API diretamente aqui
+const KEY_GPT = ''; // Defina a chave da API diretamente aqui
 
 export default function App() {
-
   const [situation, setSituation] = useState("");
   const [age, setAge] = useState(6);
   const [frequency, setFrequency] = useState("ocasionalmente");
   const [loading, setLoading] = useState(false);
   const [solution, setSolution] = useState("");
+  const [user, setUser] = useState<firebase.User | null>(null); // Estado para usuário autenticado
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+
+  useEffect(() => {
+    const unsubscribe = firebase.auth().onAuthStateChanged((user: firebase.User | null) => {
+      if (user) {
+        setUser(user);
+      } else {
+        setUser(null);
+      }
+    });
+
+    return () => unsubscribe();
+  }, []);
+
+  const handleLogin = async () => {
+    setLoading(true);
+    try {
+      await firebase.auth().signInWithEmailAndPassword(email, password);
+    } catch (error) {
+      if (error instanceof Error) {
+        Alert.alert("Erro", error.message);
+      }
+    } finally {
+      setLoading(false);
+    }
+  };
 
   async function handleGenerate() {
     if (situation === "") {
@@ -51,10 +79,8 @@ export default function App() {
     })
       .then(response => response.json())
       .then((data) => {
-        // Log the entire response data for debugging
         console.log('Response data:', data);
 
-        // Check if the response contains the expected structure
         if (data && data.choices && data.choices.length > 0 && data.choices[0].message && data.choices[0].message.content) {
           setSolution(data.choices[0].message.content);
         } else {
@@ -70,65 +96,90 @@ export default function App() {
       });
   }
 
-  return (
-    <View style={styles.container}>
-      <StatusBar barStyle="dark-content" translucent={true} backgroundColor="#F1F1F1" />
-      <Text style={styles.heading}>Guia TEA</Text>
+  if (user) {
+    return (
+      <View style={styles.container}>
+        <StatusBar barStyle="dark-content" translucent={true} backgroundColor="#F1F1F1" />
+        <Text style={styles.heading}>Guia TEA</Text>
 
-      <View style={styles.form}>
-        <Text style={styles.label}>Indique a situação que você está presenciando</Text>
-        <TextInput
-          placeholder="Ex: Crise proveniente de estímulos externos"
-          style={styles.input}
-          value={situation}
-          onChangeText={(text) => setSituation(text)}
-        />
+        <View style={styles.form}>
+          <Text style={styles.label}>Indique a situação que você está presenciando</Text>
+          <TextInput
+            placeholder="Ex: Crise proveniente de estímulos externos"
+            style={styles.input}
+            value={situation}
+            onChangeText={(text) => setSituation(text)}
+          />
 
-        <Text style={styles.label}>Idade da criança: <Text style={styles.idade}> {age.toFixed(0)} </Text> anos</Text>
-        <Slider
-          minimumValue={1}
-          maximumValue={12}
-          minimumTrackTintColor="#009688"
-          maximumTrackTintColor="#000000"
-          value={age}
-          onValueChange={(value) => setAge(value)}
-        />
+          <Text style={styles.label}>Idade da criança: <Text style={styles.idade}> {age.toFixed(0)} </Text> anos</Text>
+          <Slider
+            minimumValue={1}
+            maximumValue={12}
+            minimumTrackTintColor="#009688"
+            maximumTrackTintColor="#000000"
+            value={age}
+            onValueChange={(value) => setAge(value)}
+          />
 
-        <Text style={styles.label}>Isso tem acontecido com frequência?</Text>
-        <View style={styles.picker}>
-          <Picker
-            selectedValue={frequency}
-            onValueChange={(itemValue, itemIndex) => setFrequency(itemValue)}
-          >
-            <Picker.Item label="Ocasionalmente" value="ocasionalmente" />
-            <Picker.Item label="Frequentemente" value="frequentemente" />
-            <Picker.Item label="É a primeira vez" value="pela primeira vez agora" />
-          </Picker>
+          <Text style={styles.label}>Isso tem acontecido com frequência?</Text>
+          <View style={styles.picker}>
+            <Picker
+              selectedValue={frequency}
+              onValueChange={(itemValue) => setFrequency(itemValue)}
+            >
+              <Picker.Item label="Ocasionalmente" value="ocasionalmente" />
+              <Picker.Item label="Frequentemente" value="frequentemente" />
+              <Picker.Item label="É a primeira vez" value="pela primeira vez agora" />
+            </Picker>
+          </View>
         </View>
+
+        <Pressable style={styles.button} onPress={handleGenerate}>
+          <Text style={styles.buttonText}>Gerar estratégias</Text>
+          <MaterialIcons name="lightbulb" size={24} color="#FFF" />
+        </Pressable>
+
+        <ScrollView contentContainerStyle={{ paddingBottom: 24, marginTop: 4 }} style={styles.containerScroll} showsVerticalScrollIndicator={false} >
+          {loading && (
+            <View style={styles.content}>
+              <Text style={styles.title}>Carregando estratégias...</Text>
+              <ActivityIndicator color="#000" size="large" />
+            </View>
+          )}
+
+          {solution && (
+            <View style={styles.content}>
+              <Text style={styles.title}>Estratégias sugeridas 👇</Text>
+              <Text style={{ lineHeight: 24 }}>{solution}</Text>
+            </View>
+          )}
+        </ScrollView>
       </View>
-
-      <Pressable style={styles.button} onPress={handleGenerate}>
-        <Text style={styles.buttonText}>Gerar estratégias</Text>
-        <MaterialIcons name="lightbulb" size={24} color="#FFF" />
-      </Pressable>
-
-      <ScrollView contentContainerStyle={{ paddingBottom: 24, marginTop: 4 }} style={styles.containerScroll} showsVerticalScrollIndicator={false} >
-        {loading && (
-          <View style={styles.content}>
-            <Text style={styles.title}>Carregando estratégias...</Text>
-            <ActivityIndicator color="#000" size="large" />
-          </View>
-        )}
-
-        {solution && (
-          <View style={styles.content}>
-            <Text style={styles.title}>Estratégias sugeridas 👇</Text>
-            <Text style={{ lineHeight: 24 }}>{solution}</Text>
-          </View>
-        )}
-      </ScrollView>
-    </View>
-  );
+    );
+  } else {
+    return (
+      <View style={styles.container}>
+        <Text style={styles.heading}>Login</Text>
+        <TextInput
+          placeholder="Email"
+          style={styles.input}
+          value={email}
+          onChangeText={(text) => setEmail(text)}
+        />
+        <TextInput
+          placeholder="Password"
+          style={styles.input}
+          secureTextEntry
+          value={password}
+          onChangeText={(text) => setPassword(text)}
+        />
+        <Pressable style={styles.button} onPress={handleLogin}>
+          <Text style={styles.buttonText}>Login</Text>
+          {loading && <ActivityIndicator color="#FFF" />}
+        </Pressable>
+      </View>
+    );
+  }
 }
 
 const styles = StyleSheet.create({
