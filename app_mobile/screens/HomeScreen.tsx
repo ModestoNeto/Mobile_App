@@ -23,8 +23,7 @@ const KEY_GPT = ''; // Defina a chave da API diretamente aqui
 
 export default function HomeScreen() {
   const [situation, setSituation] = useState("");
-  const [age, setAge] = useState(6);
-  const [frequency, setFrequency] = useState("ocasionalmente");
+  const [age, setAge] = useState(9);
   const [loading, setLoading] = useState(false);
   const [solution, setSolution] = useState("");
   const navigation = useNavigation<HomeScreenNavigationProp>();
@@ -53,8 +52,8 @@ export default function HomeScreen() {
     setLoading(true);
     Keyboard.dismiss();
 
-    const prompt = `Estou enfrentando a seguinte situação com uma criança com TEA: ${situation}. Isso ocorre ${frequency}. A criança tem ${age} anos. Quais são algumas estratégias eficazes e práticas que posso usar para lidar com essa situação?`;
-
+    const prompt = `Estou trabalhando com uma criança com TEA de ${age} anos em um ambiente educacional, que esta apresentando as senguintes necessidades: ${situation}. Quais são algumas estratégias eficazes e práticas que posso usar para apoiar o aprendizado e o desenvolvimento dessa criança?`;
+    
     fetch("https://api.openai.com/v1/chat/completions", {
       method: "POST",
       headers: {
@@ -98,12 +97,12 @@ export default function HomeScreen() {
   return (
     <View style={styles.container}>
       <StatusBar barStyle="dark-content" translucent={true} backgroundColor="#F1F1F1" />
-      <Text style={styles.heading}>Guia TEA</Text>
+      <Text style={styles.heading}>Guia educativo TEA</Text>
 
       <View style={styles.form}>
-        <Text style={styles.label}>Indique a situação que você está presenciando</Text>
+        <Text style={styles.label}>Qual necessidade a criança esta apresentando?</Text>
         <TextInput
-          placeholder="Ex: Crise proveniente de estímulos externos"
+          placeholder="Ex: Dificuldade de concentração em sala de aula"
           style={styles.input}
           value={situation}
           onChangeText={(text) => setSituation(text)}
@@ -111,25 +110,13 @@ export default function HomeScreen() {
 
         <Text style={styles.label}>Idade da criança: <Text style={styles.idade}> {age.toFixed(0)} </Text> anos</Text>
         <Slider
-          minimumValue={1}
-          maximumValue={12}
+          minimumValue={3}
+          maximumValue={15}
           minimumTrackTintColor="#009688"
           maximumTrackTintColor="#000000"
           value={age}
           onValueChange={(value) => setAge(value)}
         />
-
-        <Text style={styles.label}>Isso tem acontecido com frequência?</Text>
-        <View style={styles.picker}>
-          <Picker
-            selectedValue={frequency}
-            onValueChange={(itemValue) => setFrequency(itemValue)}
-          >
-            <Picker.Item label="Ocasionalmente" value="ocasionalmente" />
-            <Picker.Item label="Frequentemente" value="frequentemente" />
-            <Picker.Item label="É a primeira vez" value="pela primeira vez agora" />
-          </Picker>
-        </View>
       </View>
 
       <Pressable style={styles.button} onPress={handleGenerate}>
@@ -190,7 +177,7 @@ const styles = StyleSheet.create({
     borderRadius: 4,
     borderColor: '#94a3b8',
     padding: 8,
-    fontSize: 16,
+    fontSize: 14,
     marginBottom: 16,
   },
   idade: {
