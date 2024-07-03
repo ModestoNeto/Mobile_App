@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import {
-  StyleSheet, View, TextInput, Pressable, Text, ScrollView, ActivityIndicator, Alert, Keyboard, Platform, StatusBar
+  StyleSheet, View, TextInput, Pressable, Text, ScrollView, ActivityIndicator, Alert, Keyboard, Platform, StatusBar, Button
 } from 'react-native';
 import { MaterialIcons } from '@expo/vector-icons';
 import { Picker } from '@react-native-picker/picker';
@@ -62,7 +62,7 @@ export default function HomeScreen() {
         Authorization: `Bearer ${KEY_GPT}`
       },
       body: JSON.stringify({
-        model: "gpt-3.5-turbo", // Use gpt-3.5-turbo
+        model: "gpt-3.5-turbo", 
         messages: [
           {
             role: 'user',
@@ -152,6 +152,10 @@ export default function HomeScreen() {
           </View>
         )}
       </ScrollView>
+
+      <Pressable style={styles.button} onPress={() => navigation.navigate('SavedResponses')}>
+        <Text style={styles.buttonText}>Ver Respostas Guardadas</Text>
+      </Pressable>
     </View>
   );
 }
@@ -202,11 +206,10 @@ const styles = StyleSheet.create({
     backgroundColor: '#FF5656',
     width: '90%',
     borderRadius: 8,
-    flexDirection: 'row',
     padding: 14,
     justifyContent: 'center',
     alignItems: 'center',
-    gap: 8,
+    marginTop: 16,
   },
   buttonText: {
     fontSize: 18,
