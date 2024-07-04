@@ -77,7 +77,7 @@ const styles = StyleSheet.create({
     marginBottom: 8,
   },
   button: {
-    width: '90%',
+    width: '50%',
     borderRadius: 8,
     padding: 14,
     justifyContent: 'center',

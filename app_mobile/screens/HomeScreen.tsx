@@ -168,7 +168,7 @@ const styles = StyleSheet.create({
     paddingTop: Platform.OS === 'android' ? StatusBar.currentHeight : 54,
   },
   form: {
-    width: '90%',
+    width: '75%',
     borderRadius: 8,
     padding: 16,
     marginTop: 16,
@@ -190,7 +190,7 @@ const styles = StyleSheet.create({
     padding: 4,
   },
   button: {
-    width: '90%',
+    width: '50%',
     borderRadius: 8,
     padding: 14,
     justifyContent: 'center',
