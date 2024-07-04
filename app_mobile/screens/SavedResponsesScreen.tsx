@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { StyleSheet, View, Text, ScrollView, Pressable, Platform, StatusBar } from 'react-native';
+import { StyleSheet, View, Text, ScrollView, Pressable, Platform, StatusBar, KeyboardAvoidingView, TouchableWithoutFeedback, Keyboard } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { useNavigation, useTheme } from '@react-navigation/native';
@@ -32,26 +32,30 @@ export default function SavedResponsesScreen() {
   }, []);
 
   return (
-    <View style={[styles.container, { backgroundColor: colors.background }]}>
-      <StatusBar barStyle={colorScheme === 'dark' ? 'light-content' : 'dark-content'} translucent={true} backgroundColor={colors.background} />
-      <Text style={[styles.heading, { color: colors.text }]}>Respostas Guardadas</Text>
-      <ScrollView contentContainerStyle={{ paddingBottom: 24, marginTop: 4 }} style={styles.containerScroll} showsVerticalScrollIndicator={false}>
-        {savedResponses.map((response, index) => (
-          <View key={index} style={[styles.responseContainer, { backgroundColor: colors.card }]}>
-            <Text style={{ color: colors.text }}>{response}</Text>
-          </View>
-        ))}
-      </ScrollView>
-      <Pressable 
-        style={({ pressed }) => [
-          { backgroundColor: pressed ? '#008080' : '#40E0D0' },
-          styles.button,
-        ]}
-        android_ripple={{ color: '#008080' }}
-        onPress={() => navigation.navigate('Home')}>
-        <Text style={styles.buttonText}>Voltar para Home</Text>
-      </Pressable>
-    </View>
+    <KeyboardAvoidingView style={{ flex: 1 }} behavior={Platform.OS === "ios" ? "padding" : undefined}>
+      <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+        <View style={[styles.container, { backgroundColor: colors.background }]}>
+          <StatusBar barStyle={colorScheme === 'dark' ? 'light-content' : 'dark-content'} translucent={true} backgroundColor={colors.background} />
+          <Text style={[styles.heading, { color: colors.text }]}>Respostas Guardadas</Text>
+          <ScrollView contentContainerStyle={{ paddingBottom: 24, marginTop: 4 }} style={styles.containerScroll} showsVerticalScrollIndicator={false}>
+            {savedResponses.map((response, index) => (
+              <View key={index} style={[styles.responseContainer, { backgroundColor: colors.card }]}>
+                <Text style={{ color: colors.text }}>{response}</Text>
+              </View>
+            ))}
+          </ScrollView>
+          <Pressable
+            style={({ pressed }) => [
+              { backgroundColor: pressed ? '#008080' : '#40E0D0' },
+              styles.button,
+            ]}
+            android_ripple={{ color: '#008080' }}
+            onPress={() => navigation.navigate('Home')}>
+            <Text style={styles.buttonText}>Voltar para Home</Text>
+          </Pressable>
+        </View>
+      </TouchableWithoutFeedback>
+    </KeyboardAvoidingView>
   );
 }
 

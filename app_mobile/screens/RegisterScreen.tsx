@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
-import { StyleSheet, View, TextInput, Pressable, Text, Platform, StatusBar, Image, Alert } from 'react-native';
+import {
+  StyleSheet, View, TextInput, Pressable, Text, Platform, StatusBar, Image, Alert, KeyboardAvoidingView, ScrollView, TouchableWithoutFeedback, Keyboard
+} from 'react-native';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { useNavigation, useTheme } from '@react-navigation/native';
 import { firebase } from '../firebase';
@@ -39,63 +41,67 @@ export default function RegisterScreen() {
   };
 
   return (
-    <View style={[styles.container, { backgroundColor: colors.background }]}>
-      <StatusBar barStyle={colorScheme === 'dark' ? 'light-content' : 'dark-content'} translucent={true} backgroundColor={colors.background} />
-      <Image source={require('../assets/images/logo.png')} style={styles.logo} />
-      <Text style={[styles.heading, { color: colors.text }]}>Registro Clarus-TEA</Text>
+    <KeyboardAvoidingView style={{ flex: 1 }} behavior={Platform.OS === "ios" ? "padding" : undefined}>
+      <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+        <ScrollView contentContainerStyle={styles.container}>
+          <StatusBar barStyle={colorScheme === 'dark' ? 'light-content' : 'dark-content'} translucent={true} backgroundColor={colors.background} />
+          <Image source={require('../assets/images/logo.png')} style={styles.logo} />
+          <Text style={[styles.heading, { color: colors.text }]}>Registro Clarus-TEA</Text>
 
-      <View style={[styles.form, { backgroundColor: colors.card }]}>
-        <TextInput
-          placeholder="Email"
-          placeholderTextColor={colors.text}
-          style={[styles.input, { color: colors.text, borderColor: 'transparent' }]}
-          value={email}
-          onChangeText={setEmail}
-          keyboardType="email-address"
-          autoCapitalize="none"
-        />
-        <View style={styles.passwordContainer}>
-          <TextInput
-            placeholder="Senha"
-            placeholderTextColor={colors.text}
-            style={[styles.input, { flex: 1, color: colors.text, borderColor: 'transparent' }]}
-            value={password}
-            onChangeText={setPassword}
-            secureTextEntry={secureTextEntry}
-          />
-          <Pressable onPress={() => setSecureTextEntry(!secureTextEntry)}>
-            <MaterialIcons name={secureTextEntry ? "visibility-off" : "visibility"} size={24} color={colors.text} />
+          <View style={[styles.form, { backgroundColor: colors.card }]}>
+            <TextInput
+              placeholder="Email"
+              placeholderTextColor={colors.text}
+              style={[styles.input, { color: colors.text, borderColor: 'transparent' }]}
+              value={email}
+              onChangeText={setEmail}
+              keyboardType="email-address"
+              autoCapitalize="none"
+            />
+            <View style={styles.passwordContainer}>
+              <TextInput
+                placeholder="Senha"
+                placeholderTextColor={colors.text}
+                style={[styles.input, { flex: 1, color: colors.text, borderColor: 'transparent' }]}
+                value={password}
+                onChangeText={setPassword}
+                secureTextEntry={secureTextEntry}
+              />
+              <Pressable onPress={() => setSecureTextEntry(!secureTextEntry)}>
+                <MaterialIcons name={secureTextEntry ? "visibility-off" : "visibility"} size={24} color={colors.text} />
+              </Pressable>
+            </View>
+            <View style={styles.passwordContainer}>
+              <TextInput
+                placeholder="Confirme a Senha"
+                placeholderTextColor={colors.text}
+                style={[styles.input, { flex: 1, color: colors.text, borderColor: 'transparent' }]}
+                value={confirmPassword}
+                onChangeText={setConfirmPassword}
+                secureTextEntry={secureTextEntryConfirm}
+              />
+              <Pressable onPress={() => setSecureTextEntryConfirm(!secureTextEntryConfirm)}>
+                <MaterialIcons name={secureTextEntryConfirm ? "visibility-off" : "visibility"} size={24} color={colors.text} />
+              </Pressable>
+            </View>
+          </View>
+
+          <Pressable
+            style={({ pressed }) => [
+              { backgroundColor: pressed ? '#008080' : '#40E0D0' },
+              styles.button,
+            ]}
+            android_ripple={{ color: '#008080' }}
+            onPress={handleRegister}>
+            <Text style={styles.buttonText}>Cadastrar</Text>
           </Pressable>
-        </View>
-        <View style={styles.passwordContainer}>
-          <TextInput
-            placeholder="Confirme a Senha"
-            placeholderTextColor={colors.text}
-            style={[styles.input, { flex: 1, color: colors.text, borderColor: 'transparent' }]}
-            value={confirmPassword}
-            onChangeText={setConfirmPassword}
-            secureTextEntry={secureTextEntryConfirm}
-          />
-          <Pressable onPress={() => setSecureTextEntryConfirm(!secureTextEntryConfirm)}>
-            <MaterialIcons name={secureTextEntryConfirm ? "visibility-off" : "visibility"} size={24} color={colors.text} />
+
+          <Pressable onPress={() => navigation.navigate('Login')}>
+            <Text style={[styles.linkText, { color: colors.primary }]}>Já tem uma conta? Faça login</Text>
           </Pressable>
-        </View>
-      </View>
-
-      <Pressable 
-        style={({ pressed }) => [
-          { backgroundColor: pressed ? '#008080' : '#40E0D0' },
-          styles.button,
-        ]}
-        android_ripple={{ color: '#008080' }}
-        onPress={handleRegister}>
-        <Text style={styles.buttonText}>Cadastrar</Text>
-      </Pressable>
-
-      <Pressable onPress={() => navigation.navigate('Login')}>
-        <Text style={[styles.linkText, { color: colors.primary }]}>Já tem uma conta? Faça login</Text>
-      </Pressable>
-    </View>
+        </ScrollView>
+      </TouchableWithoutFeedback>
+    </KeyboardAvoidingView>
   );
 }
 
