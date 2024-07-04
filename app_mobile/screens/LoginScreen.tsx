@@ -1,50 +1,78 @@
 import React, { useState } from 'react';
-import {
-  StyleSheet, View, TextInput, Pressable, Text, Alert
-} from 'react-native';
-import { useNavigation } from '@react-navigation/native';
+import { StyleSheet, View, TextInput, Pressable, Text, Platform, StatusBar, Image } from 'react-native';
+import { StackNavigationProp } from '@react-navigation/stack';
+import { useNavigation, useTheme } from '@react-navigation/native';
 import { firebase } from '../firebase';
+import { MaterialIcons } from '@expo/vector-icons';
+import { useColorScheme } from '../hooks/useColorScheme';
 
-type Navigation = {
-  navigate: (screen: string) => void;
+type RootStackParamList = {
+  Home: undefined;
+  Register: undefined;
 };
 
+type LoginScreenNavigationProp = StackNavigationProp<RootStackParamList, 'Home'>;
+
 export default function LoginScreen() {
+  const { colors } = useTheme();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const navigation = useNavigation<Navigation>();
+  const [secureTextEntry, setSecureTextEntry] = useState(true);
+  const navigation = useNavigation<LoginScreenNavigationProp>();
+  const colorScheme = useColorScheme();
 
-  const handleLogin = () => {
-    firebase.auth().signInWithEmailAndPassword(email, password)
-      .then(() => {
-        Alert.alert("Login successful!");
-        navigation.navigate('Home');
-      })
-      .catch((error) => {
-        Alert.alert("Login failed", error.message);
-      });
+  const handleLogin = async () => {
+    try {
+      await firebase.auth().signInWithEmailAndPassword(email, password);
+      navigation.navigate('Home');
+    } catch (error) {
+      console.error('Erro ao fazer login:', error);
+    }
   };
 
   return (
-    <View style={styles.container}>
-      <TextInput
-        placeholder="Email"
-        value={email}
-        onChangeText={setEmail}
-        style={styles.input}
-      />
-      <TextInput
-        placeholder="Password"
-        value={password}
-        onChangeText={setPassword}
-        secureTextEntry
-        style={styles.input}
-      />
-      <Pressable style={styles.button} onPress={handleLogin}>
+    <View style={[styles.container, { backgroundColor: colors.background }]}>
+      <StatusBar barStyle={colorScheme === 'dark' ? 'light-content' : 'dark-content'} translucent={true} backgroundColor={colors.background} />
+      <Image source={require('../assets/images/logo.png')} style={styles.logo} />
+      <Text style={[styles.heading, { color: colors.text }]}>Clarus-TEA</Text>
+
+      <View style={[styles.form, { backgroundColor: colors.card }]}>
+        <TextInput
+          placeholder="Email"
+          placeholderTextColor={colors.text}
+          style={[styles.input, { color: colors.text, borderColor: 'transparent' }]}
+          value={email}
+          onChangeText={setEmail}
+          keyboardType="email-address"
+          autoCapitalize="none"
+        />
+        <View style={styles.passwordContainer}>
+          <TextInput
+            placeholder="Senha"
+            placeholderTextColor={colors.text}
+            style={[styles.input, { flex: 1, color: colors.text, borderColor: 'transparent' }]}
+            value={password}
+            onChangeText={setPassword}
+            secureTextEntry={secureTextEntry}
+          />
+          <Pressable onPress={() => setSecureTextEntry(!secureTextEntry)}>
+            <MaterialIcons name={secureTextEntry ? "visibility-off" : "visibility"} size={24} color={colors.text} />
+          </Pressable>
+        </View>
+      </View>
+
+      <Pressable 
+        style={({ pressed }) => [
+          { backgroundColor: pressed ? '#008080' : '#40E0D0' },
+          styles.button,
+        ]}
+        android_ripple={{ color: '#008080' }}
+        onPress={handleLogin}>
         <Text style={styles.buttonText}>Login</Text>
       </Pressable>
-      <Pressable style={styles.button} onPress={() => navigation.navigate('Register')}>
-        <Text style={styles.buttonText}>Register</Text>
+
+      <Pressable onPress={() => navigation.navigate('Register')}>
+        <Text style={[styles.linkText, { color: colors.primary }]}>Não tem uma conta? Cadastre-se</Text>
       </Pressable>
     </View>
   );
@@ -53,25 +81,57 @@ export default function LoginScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: 'center',
+    alignItems: 'center',
+    paddingTop: 20,
+  },
+  logo: {
+    width: 150,
+    height: 150,
+    marginBottom: 20,
+  },
+  heading: {
+    fontSize: 32,
+    fontWeight: 'bold',
+    paddingTop: Platform.OS === 'android' ? StatusBar.currentHeight : 54,
+  },
+  form: {
+    width: '90%',
+    borderRadius: 8,
     padding: 16,
+    marginTop: 16,
+    marginBottom: 8,
   },
   input: {
     borderWidth: 1,
-    borderColor: '#ccc',
     borderRadius: 4,
-    padding: 12,
+    padding: 8,
+    fontSize: 16,
     marginBottom: 16,
+    borderColor: 'transparent',
+  },
+  passwordContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    borderWidth: 1,
+    borderRadius: 4,
+    padding: 8,
+    borderColor: 'transparent',
   },
   button: {
-    backgroundColor: '#007BFF',
-    padding: 12,
-    borderRadius: 4,
+    width: '90%',
+    borderRadius: 8,
+    padding: 14,
+    justifyContent: 'center',
     alignItems: 'center',
-    marginBottom: 16,
+    marginTop: 16,
   },
   buttonText: {
-    color: '#fff',
+    fontSize: 18,
+    color: '#FFF',
+    fontWeight: 'bold',
+  },
+  linkText: {
     fontSize: 16,
+    marginTop: 16,
   },
 });

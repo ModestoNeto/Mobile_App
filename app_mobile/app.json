@@ -1,11 +1,11 @@
 {
   "expo": {
-    "name": "roteiroapp",
-    "slug": "roteiroapp",
+    "name": "Clarus-TEA",
+    "slug": "clarus-tea",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/images/icon.png",
-    "userInterfaceStyle": "light",
+    "icon": "./assets/images/logo.png",
+    "userInterfaceStyle": "automatic",
     "splash": {
       "image": "./assets/images/splash.png",
       "resizeMode": "contain",
@@ -16,12 +16,12 @@
     ],
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "com.yourcompany.yourapp",
+      "bundleIdentifier": "com.yourcompany.clarustea",
       "googleServicesFile": "./GoogleService-Info.plist"
     },
     "android": {
       "enableHermes": true,
-      "package": "com.yourcompany.yourapp",
+      "package": "com.yourcompany.clarustea",
       "googleServicesFile": "./app/google-services.json",
       "adaptiveIcon": {
         "foregroundImage": "./assets/images/adaptive-icon.png",
@@ -29,8 +29,7 @@
       }
     },
     "web": {
-      "favicon": "./assets/images/favicon.png"
+      "favicon": "./assets/images/logo.png"
     }
   }
-  
 }

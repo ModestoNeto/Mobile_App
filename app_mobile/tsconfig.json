@@ -2,8 +2,11 @@
   "compilerOptions": {
     "target": "esnext",
     "module": "commonjs",
-    "jsx": "react-native", // ou "react" se for um projeto React web
-    "lib": ["dom", "esnext"],
+    "jsx": "react-native",
+    "lib": [
+      "dom",
+      "esnext"
+    ],
     "allowJs": true,
     "skipLibCheck": true,
     "esModuleInterop": true,
@@ -14,6 +17,12 @@
     "noUnusedLocals": true,
     "noUnusedParameters": true
   },
-  "include": ["**/*.ts", "**/*.tsx"],
-  "exclude": ["node_modules"]
+  "include": [
+    "**/*.ts",
+    "**/*.tsx"
+  ],
+  "exclude": [
+    "node_modules"
+  ],
+  "extends": "expo/tsconfig.base"
 }

@@ -1,31 +1,39 @@
 import React from 'react';
-import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import { createStackNavigator, CardStyleInterpolators } from '@react-navigation/stack';
 import HomeScreen from '../screens/HomeScreen';
-import { TabBarIcon } from '../components/navigation/TabBarIcon';
-import { Colors } from '../constants/Colors';
-import { useColorScheme } from '../hooks/useColorScheme';
+import LoginScreen from '../screens/LoginScreen';
+import RegisterScreen from '../screens/RegisterScreen';
+import SavedResponsesScreen from '../screens/SavedResponsesScreen';
 
-const Tab = createBottomTabNavigator();
+const Stack = createStackNavigator();
 
 export default function MainNavigator() {
-  const colorScheme = useColorScheme();
-
   return (
-    <Tab.Navigator
+    <Stack.Navigator
       screenOptions={{
-        tabBarActiveTintColor: Colors[colorScheme].tint,
-        headerShown: false,
-      }}>
-      <Tab.Screen
-        name="Home"
-        component={HomeScreen}
-        options={{
-          title: 'Home',
-          tabBarIcon: ({ color, focused }) => (
-            <TabBarIcon name={focused ? 'home' : 'home-outline'} color={color} />
-          ),
-        }}
+        cardStyleInterpolator: CardStyleInterpolators.forHorizontalIOS,
+      }}
+    >
+      <Stack.Screen 
+        name="Home" 
+        component={HomeScreen} 
+        options={{ headerShown: false }}
       />
-    </Tab.Navigator>
+      <Stack.Screen 
+        name="Login" 
+        component={LoginScreen} 
+        options={{ headerShown: false }}
+      />
+      <Stack.Screen 
+        name="Register" 
+        component={RegisterScreen} 
+        options={{ headerShown: false }}
+      />
+      <Stack.Screen 
+        name="SavedResponses" 
+        component={SavedResponsesScreen} 
+        options={{ headerShown: false }}
+      />
+    </Stack.Navigator>
   );
 }

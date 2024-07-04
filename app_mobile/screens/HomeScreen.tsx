@@ -1,27 +1,24 @@
 import React, { useState, useEffect } from 'react';
 import {
-  StyleSheet, View, TextInput, Pressable, Text, ScrollView, ActivityIndicator, Alert, Keyboard, Platform, StatusBar, Button
+  StyleSheet, View, TextInput, Pressable, Text, ScrollView, ActivityIndicator, Alert, Keyboard, Platform, StatusBar
 } from 'react-native';
 import { MaterialIcons } from '@expo/vector-icons';
-import { Picker } from '@react-native-picker/picker';
 import Slider from '@react-native-community/slider';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { StackNavigationProp } from '@react-navigation/stack';
-import { useNavigation } from '@react-navigation/native';
+import { useNavigation, useTheme } from '@react-navigation/native';
 
 type RootStackParamList = {
   Home: undefined;
   SavedResponses: undefined;
 };
 
-type HomeScreenNavigationProp = StackNavigationProp<
-  RootStackParamList,
-  'Home'
->;
+type HomeScreenNavigationProp = StackNavigationProp<RootStackParamList, 'Home'>;
 
 const KEY_GPT = ''; // Defina a chave da API diretamente aqui
 
 export default function HomeScreen() {
+  const { colors } = useTheme();
   const [situation, setSituation] = useState("");
   const [age, setAge] = useState(9);
   const [loading, setLoading] = useState(false);
@@ -52,7 +49,7 @@ export default function HomeScreen() {
     setLoading(true);
     Keyboard.dismiss();
 
-    const prompt = `Estou trabalhando com uma criança com TEA de ${age} anos em um ambiente educacional, que esta apresentando as senguintes necessidades: ${situation}. Quais são algumas estratégias eficazes e práticas que posso usar para apoiar o aprendizado e o desenvolvimento dessa criança?`;
+    const prompt = `Estou trabalhando com uma criança com TEA de ${age} anos em um ambiente educacional, que esta apresentando as seguintes necessidades: ${situation}. Quais são algumas estratégias eficazes e práticas que posso usar para apoiar o aprendizado e o desenvolvimento dessa criança?`;
     
     fetch("https://api.openai.com/v1/chat/completions", {
       method: "POST",
@@ -95,20 +92,21 @@ export default function HomeScreen() {
   }
 
   return (
-    <View style={styles.container}>
+    <View style={[styles.container, { backgroundColor: colors.background }]}>
       <StatusBar barStyle="dark-content" translucent={true} backgroundColor="#F1F1F1" />
-      <Text style={styles.heading}>Guia educativo TEA</Text>
+      <Text style={[styles.heading, { color: colors.text }]}>Guia educativo TEA</Text>
 
-      <View style={styles.form}>
-        <Text style={styles.label}>Qual necessidade a criança esta apresentando?</Text>
+      <View style={[styles.form, { backgroundColor: colors.card }]}>
+        <Text style={[styles.label, { color: colors.text }]}>Qual necessidade a criança esta apresentando?</Text>
         <TextInput
           placeholder="Ex: Dificuldade de concentração em sala de aula"
-          style={styles.input}
+          placeholderTextColor={colors.text}
+          style={[styles.input, { color: colors.text, borderColor: colors.border }]}
           value={situation}
           onChangeText={(text) => setSituation(text)}
         />
 
-        <Text style={styles.label}>Idade da criança: <Text style={styles.idade}> {age.toFixed(0)} </Text> anos</Text>
+        <Text style={[styles.label, { color: colors.text }]}>Idade da criança: <Text style={[styles.idade, { backgroundColor: colors.card }]}>{age.toFixed(0)}</Text> anos</Text>
         <Slider
           minimumValue={3}
           maximumValue={15}
@@ -119,28 +117,39 @@ export default function HomeScreen() {
         />
       </View>
 
-      <Pressable style={styles.button} onPress={handleGenerate}>
+      <Pressable 
+        style={({ pressed }) => [
+          { backgroundColor: pressed ? '#008080' : '#40E0D0' },
+          styles.button,
+        ]}
+        android_ripple={{ color: '#008080' }}
+        onPress={handleGenerate}>
         <Text style={styles.buttonText}>Gerar estratégias</Text>
         <MaterialIcons name="lightbulb" size={24} color="#FFF" />
       </Pressable>
 
-      <ScrollView contentContainerStyle={{ paddingBottom: 24, marginTop: 4 }} style={styles.containerScroll} showsVerticalScrollIndicator={false} >
+      <ScrollView contentContainerStyle={{ paddingBottom: 24, marginTop: 4 }} style={styles.containerScroll} showsVerticalScrollIndicator={false}>
         {loading && (
           <View style={styles.content}>
-            <Text style={styles.title}>Carregando estratégias...</Text>
-            <ActivityIndicator color="#000" size="large" />
+            <Text style={[styles.title, { color: colors.text }]}>Carregando estratégias...</Text>
+            <ActivityIndicator color={colors.text} size="large" />
           </View>
         )}
 
         {solution && (
           <View style={styles.content}>
-            <Text style={styles.title}>Estratégias sugeridas 👇</Text>
-            <Text style={{ lineHeight: 24 }}>{solution}</Text>
+            <Text style={[styles.title, { color: colors.text }]}>Estratégias sugeridas 👇</Text>
+            <Text style={{ lineHeight: 24, color: colors.text }}>{solution}</Text>
           </View>
         )}
       </ScrollView>
 
-      <Pressable style={styles.button} onPress={() => navigation.navigate('SavedResponses')}>
+      <Pressable style={({ pressed }) => [
+          { backgroundColor: pressed ? '#008080' : '#40E0D0' },
+          styles.button,
+        ]}
+        android_ripple={{ color: '#008080' }}
+        onPress={() => navigation.navigate('SavedResponses')}>
         <Text style={styles.buttonText}>Ver Respostas Guardadas</Text>
       </Pressable>
     </View>
@@ -150,7 +159,6 @@ export default function HomeScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#f1f1f1',
     alignItems: 'center',
     paddingTop: 20,
   },
@@ -160,7 +168,6 @@ const styles = StyleSheet.create({
     paddingTop: Platform.OS === 'android' ? StatusBar.currentHeight : 54,
   },
   form: {
-    backgroundColor: '#FFF',
     width: '90%',
     borderRadius: 8,
     padding: 16,
@@ -175,22 +182,14 @@ const styles = StyleSheet.create({
   input: {
     borderWidth: 1,
     borderRadius: 4,
-    borderColor: '#94a3b8',
     padding: 8,
     fontSize: 14,
     marginBottom: 16,
   },
   idade: {
-    backgroundColor: '#F1f1f1'
-  },
-  picker: {
-    borderWidth: 1,
-    borderColor: '#94a3b8',
-    borderRadius: 4,
-    marginBottom: 16,
+    padding: 4,
   },
   button: {
-    backgroundColor: '#FF5656',
     width: '90%',
     borderRadius: 8,
     padding: 14,
