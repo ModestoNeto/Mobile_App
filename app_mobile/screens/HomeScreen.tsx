@@ -41,7 +41,7 @@ export default function HomeScreen() {
 
   async function handleGenerate() {
     if (situation === "") {
-      Alert.alert("Atenção", "Preencha a situação que você está enfrentando!");
+      Alert.alert("Atenção", "Preencha a questão que você possui!");
       return;
     }
 
