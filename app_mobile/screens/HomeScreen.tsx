@@ -15,7 +15,7 @@ type RootStackParamList = {
 
 type HomeScreenNavigationProp = StackNavigationProp<RootStackParamList, 'Home'>;
 
-const KEY_GPT = ''; // Defina a chave da API diretamente aqui
+const KEY_GPT = 'sk-proj-RIBV1HR9XG6g4rX9ptZ6T3BlbkFJYtquvCPp0i4wx3EQWjIT'; // Defina a chave da API diretamente aqui
 
 export default function HomeScreen() {
   const { colors } = useTheme();
@@ -49,8 +49,7 @@ export default function HomeScreen() {
     setLoading(true);
     Keyboard.dismiss();
 
-    const prompt = `Estou trabalhando com uma criança com TEA de ${age} anos em um ambiente educacional, que esta apresentando as seguintes necessidades: ${situation}. Quais são algumas estratégias eficazes e práticas que posso usar para apoiar o aprendizado e o desenvolvimento dessa criança?`;
-    
+    const prompt = `Estou trabalhando com uma criança com TEA de ${age} anos em um ambiente educacional, que esta apresentando as seguintes necessidades: ${situation}. Quais são algumas estratégias eficazes e práticas que posso usar para apoiar o aprendizado e o desenvolvimento dessa criança? Colque no mínimo 3 estratégias diferentes o mais explicado possível.`;    
     fetch("https://api.openai.com/v1/chat/completions", {
       method: "POST",
       headers: {
