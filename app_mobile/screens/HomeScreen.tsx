@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { StyleSheet, View, TextInput, Pressable, Text, ScrollView, ActivityIndicator, Alert, Keyboard, Platform, StatusBar, KeyboardAvoidingView, TouchableWithoutFeedback } from 'react-native';
+import {
+  StyleSheet, View, TextInput, Pressable, Text, ScrollView, ActivityIndicator, Alert, Keyboard, Platform, StatusBar
+} from 'react-native';
 import { MaterialIcons } from '@expo/vector-icons';
 import Slider from '@react-native-community/slider';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -75,7 +77,10 @@ export default function HomeScreen() {
         if (data && data.choices && data.choices.length > 0 && data.choices[0].message && data.choices[0].message.content) {
           const newSolution = data.choices[0].message.content;
           setSolution(newSolution);
-          await AsyncStorage.setItem('@solution', newSolution);
+          const storedResponses = await AsyncStorage.getItem('@responses');
+          const responses = storedResponses ? JSON.parse(storedResponses) : [];
+          responses.push({ question: situation, answer: newSolution });
+          await AsyncStorage.setItem('@responses', JSON.stringify(responses));
         } else {
           throw new Error('Resposta inesperada da API');
         }
@@ -90,72 +95,67 @@ export default function HomeScreen() {
   }
 
   return (
-    <KeyboardAvoidingView style={{ flex: 1 }} behavior={Platform.OS === "ios" ? "padding" : undefined}>
-      <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-        <View style={[styles.container, { backgroundColor: colors.background }]}>
-          <StatusBar barStyle="dark-content" translucent={true} backgroundColor="#F1F1F1" />
-          <Text style={[styles.heading, { color: colors.text }]}>Guia educativo TEA</Text>
+    <View style={[styles.container, { backgroundColor: colors.background }]}>
+      <StatusBar barStyle="dark-content" translucent={true} backgroundColor="#F1F1F1" />
+      <Text style={[styles.heading, { color: colors.text }]}>Guia educativo TEA</Text>
 
-          <View style={[styles.form, { backgroundColor: colors.card }]}>
-            <Text style={[styles.label, { color: colors.text }]}>Qual necessidade a criança esta apresentando?</Text>
-            <TextInput
-              placeholder="Ex: Dificuldade de concentração em sala de aula"
-              placeholderTextColor={colors.text}
-              style={[styles.input, { color: colors.text, borderColor: colors.border }]}
-              value={situation}
-              onChangeText={(text) => setSituation(text)}
-            />
+      <View style={[styles.form, { backgroundColor: colors.card }]}>
+        <Text style={[styles.label, { color: colors.text }]}>Qual necessidade a criança esta apresentando?</Text>
+        <TextInput
+          placeholder="Ex: Dificuldade de concentração em sala de aula"
+          placeholderTextColor={colors.text}
+          style={[styles.input, { color: colors.text, borderColor: colors.border }]}
+          value={situation}
+          onChangeText={(text) => setSituation(text)}
+        />
 
-            <Text style={[styles.label, { color: colors.text }]}>Idade da criança: <Text style={[styles.idade, { backgroundColor: colors.card }]}>{age.toFixed(0)}</Text> anos</Text>
-            <Slider
-              minimumValue={3}
-              maximumValue={15}
-              minimumTrackTintColor="#009688"
-              maximumTrackTintColor="#000000"
-              value={age}
-              onValueChange={(value) => setAge(value)}
-            />
+        <Text style={[styles.label, { color: colors.text }]}>Idade da criança: <Text style={[styles.idade, { backgroundColor: colors.card }]}>{age.toFixed(0)}</Text> anos</Text>
+        <Slider
+          minimumValue={3}
+          maximumValue={15}
+          minimumTrackTintColor="#009688"
+          maximumTrackTintColor="#000000"
+          value={age}
+          onValueChange={(value) => setAge(value)}
+        />
+      </View>
+
+      <Pressable 
+        style={({ pressed }) => [
+          { backgroundColor: pressed ? '#008080' : '#40E0D0' },
+          styles.button,
+        ]}
+        android_ripple={{ color: '#008080' }}
+        onPress={handleGenerate}>
+        <Text style={styles.buttonText}>Gerar estratégias</Text>
+        <MaterialIcons name="lightbulb" size={24} color="#FFF" />
+      </Pressable>
+
+      <ScrollView contentContainerStyle={{ paddingBottom: 24, marginTop: 4 }} style={styles.containerScroll} showsVerticalScrollIndicator={false}>
+        {loading && (
+          <View style={styles.content}>
+            <Text style={[styles.title, { color: colors.text }]}>Carregando estratégias...</Text>
+            <ActivityIndicator color={colors.text} size="large" />
           </View>
+        )}
 
-          <Pressable
-            style={({ pressed }) => [
-              { backgroundColor: pressed ? '#008080' : '#40E0D0' },
-              styles.button,
-            ]}
-            android_ripple={{ color: '#008080' }}
-            onPress={handleGenerate}>
-            <Text style={styles.buttonText}>Gerar estratégias</Text>
-            <MaterialIcons name="lightbulb" size={24} color="#FFF" />
-          </Pressable>
+        {solution && (
+          <View style={styles.content}>
+            <Text style={[styles.title, { color: colors.text }]}>Estratégias sugeridas 👇</Text>
+            <Text style={{ lineHeight: 24, color: colors.text }}>{solution}</Text>
+          </View>
+        )}
+      </ScrollView>
 
-          <ScrollView contentContainerStyle={{ paddingBottom: 24, marginTop: 4 }} style={styles.containerScroll} showsVerticalScrollIndicator={false}>
-            {loading && (
-              <View style={styles.content}>
-                <Text style={[styles.title, { color: colors.text }]}>Carregando estratégias...</Text>
-                <ActivityIndicator color={colors.text} size="large" />
-              </View>
-            )}
-
-            {solution && (
-              <View style={styles.content}>
-                <Text style={[styles.title, { color: colors.text }]}>Estratégias sugeridas 👇</Text>
-                <Text style={{ lineHeight: 24, color: colors.text }}>{solution}</Text>
-              </View>
-            )}
-          </ScrollView>
-
-          <Pressable
-            style={({ pressed }) => [
-              { backgroundColor: pressed ? '#008080' : '#40E0D0' },
-              styles.button,
-            ]}
-            android_ripple={{ color: '#008080' }}
-            onPress={() => navigation.navigate('SavedResponses')}>
-            <Text style={styles.buttonText}>Ver Respostas Guardadas</Text>
-          </Pressable>
-        </View>
-      </TouchableWithoutFeedback>
-    </KeyboardAvoidingView>
+      <Pressable style={({ pressed }) => [
+          { backgroundColor: pressed ? '#008080' : '#40E0D0' },
+          styles.button,
+        ]}
+        android_ripple={{ color: '#008080' }}
+        onPress={() => navigation.navigate('SavedResponses')}>
+        <Text style={styles.buttonText}>Ver Respostas Guardadas</Text>
+      </Pressable>
+    </View>
   );
 }
 
