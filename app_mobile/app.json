@@ -21,7 +21,7 @@
     },
     "android": {
       "enableHermes": true,
-      "package": "com.yourcompany.clarus-tea",
+      "package": "com.modesto_neto.clarustea",
       "googleServicesFile": "./google-services.json",
       "adaptiveIcon": {
         "foregroundImage": "./assets/images/adaptive-icon.png",
@@ -30,6 +30,11 @@
     },
     "web": {
       "favicon": "./assets/images/logo.png"
+    },
+    "extra": {
+      "eas": {
+        "projectId": "dca76576-1b95-43c8-b902-6bdfb981ad83"
+      }
     }
   }
 }
