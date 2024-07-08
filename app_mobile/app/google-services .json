@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "541851876776",
+    "firebase_url": "https://teachatbot2024-default-rtdb.firebaseio.com",
+    "project_id": "teachatbot2024",
+    "storage_bucket": "teachatbot2024.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:541851876776:android:a47d35c9733223d27a319d",
+        "android_client_info": {
+          "package_name": "com.TEA.TEAChatBot"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "541851876776-poe49vmtdcgrcocnu9kacm1qtp3f7knk.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAkbonwOCwZ2oXwJs8DbhmHjkqt35zaljc"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "541851876776-poe49vmtdcgrcocnu9kacm1qtp3f7knk.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
