@@ -14,11 +14,6 @@
     "assetBundlePatterns": [
       "**/*"
     ],
-    "ios": {
-      "supportsTablet": true,
-      "bundleIdentifier": "com.yourcompany.clarus-tea",
-      "googleServicesFile": "./GoogleService-Info.plist"
-    },
     "android": {
       "enableHermes": true,
       "package": "com.yourcompany.clarus-tea",
