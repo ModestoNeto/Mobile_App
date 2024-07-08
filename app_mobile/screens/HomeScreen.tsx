@@ -15,7 +15,7 @@ type RootStackParamList = {
 
 type HomeScreenNavigationProp = StackNavigationProp<RootStackParamList, 'Home'>;
 
-const KEY_GPT = 'sk-proj-UEhaAydcVluAOLZAtWzoT3BlbkFJvJ4t6bxwOpGGidlqaTxw'; // Defina a chave da API diretamente aqui
+const KEY_GPT = ''; // Defina a chave da API diretamente aqui
 
 export default function HomeScreen() {
   const { colors } = useTheme();
