@@ -14,14 +14,9 @@
     "assetBundlePatterns": [
       "**/*"
     ],
-    "ios": {
-      "supportsTablet": true,
-      "bundleIdentifier": "com.yourcompany.clarus-tea",
-      "googleServicesFile": "./GoogleService-Info.plist"
-    },
     "android": {
       "enableHermes": true,
-      "package": "com.modesto_neto.clarustea",
+      "package": "com.TEA.TEAChatBot",
       "googleServicesFile": "./google-services.json",
       "adaptiveIcon": {
         "foregroundImage": "./assets/images/adaptive-icon.png",

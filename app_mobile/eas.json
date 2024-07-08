@@ -5,12 +5,22 @@
   "build": {
     "development": {
       "developmentClient": true,
-      "distribution": "internal"
+      "distribution": "internal",
+      "env": {
+        "OPENAI_API_KEY": "sk-proj-RIBV1HR9XG6g4rX9ptZ6T3BlbkFJYtquvCPp0i4wx3EQWjIT"
+      }
     },
     "preview": {
-      "distribution": "internal"
+      "distribution": "internal",
+      "env": {
+        "OPENAI_API_KEY": "sk-proj-RIBV1HR9XG6g4rX9ptZ6T3BlbkFJYtquvCPp0i4wx3EQWjIT"
+      }
     },
-    "production": {}
+    "production": {
+      "env": {
+        "OPENAI_API_KEY": "sk-proj-RIBV1HR9XG6g4rX9ptZ6T3BlbkFJYtquvCPp0i4wx3EQWjIT"
+      }
+    }
   },
   "submit": {
     "production": {}
